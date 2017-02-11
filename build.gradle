@@ -1,0 +1,32 @@
+	buildscript {
+  repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+  }
+
+  
+}
+
+
+subprojects {
+  apply plugin: 'java'
+
+  repositories {
+		mavenCentral()
+		maven { url "https://repo.spring.io/snapshot" }
+		maven { url "https://repo.spring.io/milestone" }
+}
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
+  configurations.all {
+    //Dont cache snapshots
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+  }
+}
+
+wrapper {
+  gradleVersion = "2.10"
+}
