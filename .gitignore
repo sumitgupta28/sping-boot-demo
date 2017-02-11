@@ -13,3 +13,5 @@ hs_err_pid*
 /build/
 /sping-boot-demo/
 /spring-boot-demo/
+/.gradle/
+/.settings/
