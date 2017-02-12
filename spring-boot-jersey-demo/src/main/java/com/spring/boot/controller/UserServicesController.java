@@ -16,7 +16,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.CollectionUtils;
 
+import com.spring.boot.common.ErrorCodes;
+import com.spring.boot.domain.ErrorMessage;
 import com.spring.boot.domain.User;
 import com.spring.boot.service.UserService;
 
@@ -53,7 +56,17 @@ public class UserServicesController {
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response getUser(@PathParam("userName") String userName) {
 		final List<User> entity = userService.getUserByUserName(userName);
-		return Response.status(Status.ACCEPTED).entity(entity).type(MediaType.APPLICATION_JSON).build();
+		if (!CollectionUtils.isEmpty(entity)) {
+			return Response.status(Status.ACCEPTED).entity(entity).type(MediaType.APPLICATION_JSON).build();
+		} else {
+			return getUserNotFoundResponse();
+		}
+	}
+
+	private Response getUserNotFoundResponse() {
+		return Response.status(Status.BAD_REQUEST)
+				.entity(new ErrorMessage(ErrorCodes.USER_NOT_FOUND_CODE, ErrorCodes.USER_NOT_FOUND_CODE))
+				.type(MediaType.APPLICATION_JSON).build();
 	}
 
 	@POST
