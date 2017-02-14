@@ -1,11 +1,11 @@
 buildscript {
 	ext {
-		springBootVersion = '2.0.0.BUILD-SNAPSHOT'
+		springBootVersion = '1.5.1.RELEASE'
+        springCloudConnectorsVersion = '1.2.3.RELEASE'
 	}
 	repositories {
 		mavenCentral()
-		maven { url "https://repo.spring.io/snapshot" }
-		maven { url "https://repo.spring.io/milestone" }
+		jcenter()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -26,8 +26,7 @@ sourceCompatibility = 1.8
 
 repositories {
 	mavenCentral()
-	maven { url "https://repo.spring.io/snapshot" }
-	maven { url "https://repo.spring.io/milestone" }
+	jcenter()
 }
 
 configurations {
@@ -40,11 +39,24 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
 	
+	
+	
+	  // Spring Cloud Connectors
+    compile "org.springframework.cloud:spring-cloud-core:${springCloudConnectorsVersion}"
+    compile "org.springframework.cloud:spring-cloud-spring-service-connector:${springCloudConnectorsVersion}"
+    compile "org.springframework.cloud:spring-cloud-cloudfoundry-connector:${springCloudConnectorsVersion}"
+		
+	
 	//swagger
 	compile('io.swagger:swagger-inflector:1.0.10')
 	
 	// H2 Database
-	compile ('com.h2database:h2:1.4.193')
+	runtime('com.h2database:h2:1.4.193')
+
+	// my sql
+	compile ('commons-dbcp:commons-dbcp')
+	runtime('mysql:mysql-connector-java')
+	//runtime('org.flywaydb:flyway-core')
 	
 	// Test
 	testCompile('org.springframework.boot:spring-boot-starter-test')

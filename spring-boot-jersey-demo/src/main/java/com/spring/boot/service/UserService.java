@@ -32,14 +32,21 @@ public class UserService {
 		return userMapper.getUserTbl(userTbls);
 	}
 
+	/**
+	 * Create a user and returns true if user created Successfully else return
+	 * false.
+	 * 
+	 * @param user
+	 * @return {@link Boolean}
+	 */
 	@Transactional
-	public void createUser(final User user) {
-		if (!isExistingUser(user)) {
+	public boolean createUser(final User user) {
+		boolean isExistingUser = !isExistingUser(user);
+		if (isExistingUser) {
 			final UserTbl userTbl = userMapper.getUserTbl(user);
 			userRepository.save(userTbl);
-		} else {
-			//
 		}
+		return isExistingUser;
 	}
 
 	@Transactional

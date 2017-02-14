@@ -2,6 +2,7 @@ package com.spring.boot.controller;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -44,7 +45,7 @@ public class UserServicesController {
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response getAllUser() {
 		final List<User> entity = userService.getAllUsers();
-		return Response.status(Status.ACCEPTED).entity(entity).type(MediaType.APPLICATION_JSON).build();
+		return Response.status(Status.OK).entity(entity).type(MediaType.APPLICATION_JSON).build();
 	}
 
 	@GET
@@ -57,7 +58,7 @@ public class UserServicesController {
 	public Response getUser(@PathParam("userName") String userName) {
 		final List<User> entity = userService.getUserByUserName(userName);
 		if (!CollectionUtils.isEmpty(entity)) {
-			return Response.status(Status.ACCEPTED).entity(entity).type(MediaType.APPLICATION_JSON).build();
+			return Response.status(Status.OK).entity(entity).type(MediaType.APPLICATION_JSON).build();
 		} else {
 			return getUserNotFoundResponse();
 		}
@@ -69,18 +70,31 @@ public class UserServicesController {
 				.type(MediaType.APPLICATION_JSON).build();
 	}
 
+	/**
+	 * Create user
+	 * 
+	 * @param user
+	 *            {@link User}
+	 * @return {@link Response}
+	 */
 	@POST
 	@Path("/create")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Gets all the users.", response = User.class)
+	@ApiOperation(value = "Create user.", response = User.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "User Created Successfully!!"),
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response createUser(final User user) {
 		userService.createUser(user);
-		return Response.status(Status.ACCEPTED).build();
+		return Response.status(Status.OK).build();
 	}
 
+	/**
+	 * Gets all the users
+	 * 
+	 * @param user
+	 * @return {@link Response}
+	 */
 	@PUT
 	@Path("/update")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -91,10 +105,16 @@ public class UserServicesController {
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response updatebyUserName(final User user) {
 		userService.updateUser(user);
-		return Response.status(Status.ACCEPTED).build();
+		return Response.status(Status.OK).build();
 
 	}
 
+	/**
+	 * Delete the user for given userName
+	 * 
+	 * @param userName
+	 * @return {@link Response}
+	 */
 	@DELETE
 	@Path("/delete/{userName}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -105,9 +125,15 @@ public class UserServicesController {
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response deleteByUserName(final String userName) {
 		userService.deleteUserByUserName(userName);
-		return Response.status(Status.ACCEPTED).build();
+		return Response.status(Status.OK).build();
 	}
 
+	/**
+	 * Delete All the Users
+	 * 
+	 * @param userName
+	 * @return {@link Response}
+	 */
 	@DELETE
 	@Path("/delete")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -117,7 +143,25 @@ public class UserServicesController {
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response deleteAll(final String userName) {
 		userService.deleteAllUser();
-		return Response.status(Status.ACCEPTED).build();
+		return Response.status(Status.OK).build();
 	}
 
+	/**
+	 * Post Construct add users in db.
+	 */
+	@PostConstruct
+	public void loadData() {
+		User user = null;
+		for (int i = 0; i < 10; i++) {
+			user = new User();
+			user.setUserName("userName" + i);
+			user.setEmailAddress("userName" + i + "@mail.com");
+			user.setFirstName("User First Name" + i);
+			user.setLastName("User Last Name" + i);
+			user.setPhoneNumber("111-222-222" + i);
+			user.setAddress("Illions");
+			userService.createUser(user);
+		}
+
+	}
 }

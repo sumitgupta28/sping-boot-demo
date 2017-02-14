@@ -1,7 +1,13 @@
----
 applications:
 - name: spring-boot-jersey-demo
   memory: 1024M
   host: spring-boot-jersey-demo
   domain: cfapps.io
   buildpack: java_buildpack
+  path: build/libs/spring-boot-demo-0.0.1-SNAPSHOT.war
+  services:
+      - user-service-db
+      - user-relic-service
+  env:
+      SPRING_PROFILES_ACTIVE: pcf
+   
