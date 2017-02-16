@@ -11,6 +11,8 @@ import org.springframework.util.CollectionUtils;
 import com.spring.boot.domain.User;
 import com.spring.boot.entity.UserTbl;
 import com.spring.boot.mapper.UserMapper;
+import com.spring.boot.rabbit.message.IMessageSender;
+import com.spring.boot.redis.message.IRedisMessageSender;
 import com.spring.boot.repository.UserRepository;
 
 @Service
@@ -22,13 +24,22 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 
+	@Autowired
+	private IMessageSender messageSender;
+
+	@Autowired
+	private IRedisMessageSender redisMessageSender;
+
 	public List<User> getAllUsers() {
 		final List<UserTbl> userTbls = userRepository.findAll();
+		System.out.println("[getAllUsers]"+redisMessageSender.findAllUsers());
 		return userMapper.getUserTbl(userTbls);
 	}
 
 	public List<User> getUserByUserName(final String userName) {
+		System.out.println("[getUserByUserName] userName "+userName);
 		final List<UserTbl> userTbls = userRepository.findByUserNameIgnoreCase(userName);
+		System.out.println("[getUserByUserName]"+redisMessageSender.findUser(userName));
 		return userMapper.getUserTbl(userTbls);
 	}
 
@@ -45,27 +56,32 @@ public class UserService {
 		if (isExistingUser) {
 			final UserTbl userTbl = userMapper.getUserTbl(user);
 			userRepository.save(userTbl);
+			messageSender.sendMessage(user);
+			redisMessageSender.sendMessage(user);
+			redisMessageSender.saveUser(user);
 		}
 		return isExistingUser;
 	}
 
 	@Transactional
-	public void updateUser(final User user) {
-		if (isExistingUser(user)) {
+	public boolean updateUser(final User user) {
+		boolean isExistingUser = !isExistingUser(user);
+		if (isExistingUser) {
 			final UserTbl userTbl = userMapper.getUserTbl(user);
 			userRepository.save(userTbl);
-		} else {
-			///
+			redisMessageSender.updateUser(user);
 		}
+		return isExistingUser;
 	}
 
 	@Transactional
-	public void deleteUserByUserName(final String userName) {
-		if (isExistingUser(userName)) {
+	public boolean deleteUserByUserName(final String userName) {
+		boolean isExistingUser = !isExistingUser(userName);
+		if (isExistingUser) {
 			userRepository.deleteByUserNameIgnoreCase(userName);
-		} else {
-			///
+			redisMessageSender.deleteUser(userName);
 		}
+		return isExistingUser;
 	}
 
 	@Transactional

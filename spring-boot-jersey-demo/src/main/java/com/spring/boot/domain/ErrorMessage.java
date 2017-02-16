@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "errorCode", "errorMessage" })
-
 public class ErrorMessage {
 
 	@JsonProperty("errorMessage")

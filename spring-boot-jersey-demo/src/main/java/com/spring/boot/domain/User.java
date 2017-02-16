@@ -100,4 +100,24 @@ public class User {
 		this.additionalProperties.put(name, value);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [userName=");
+		builder.append(userName);
+		builder.append(", firstName=");
+		builder.append(firstName);
+		builder.append(", lastName=");
+		builder.append(lastName);
+		builder.append(", address=");
+		builder.append(address);
+		builder.append(", emailAddress=");
+		builder.append(emailAddress);
+		builder.append(", phoneNumber=");
+		builder.append(phoneNumber);
+		builder.append("]");
+		return builder.toString();
+	}
+	
+	
 }

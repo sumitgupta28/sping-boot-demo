@@ -78,15 +78,18 @@ public class UserServicesController {
 	 * @return {@link Response}
 	 */
 	@POST
-	@Path("/create")
+	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Create user.", response = User.class)
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "User Created Successfully!!"),
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response createUser(final User user) {
-		userService.createUser(user);
-		return Response.status(Status.OK).build();
+		boolean userCreated = userService.createUser(user);
+		return userCreated ? Response.status(Status.OK).build()
+				: Response.status(Status.BAD_REQUEST).entity(
+						new ErrorMessage(ErrorCodes.USER_ALREADY_PRESENT_CODE, ErrorCodes.USER_ALREADY_PRESENT_MSG))
+						.build();
 	}
 
 	/**
@@ -104,9 +107,11 @@ public class UserServicesController {
 			@ApiResponse(code = 400, message = "Not Found User by porvided UserName"),
 			@ApiResponse(code = 503, message = "Error While Procssing") })
 	public Response updatebyUserName(final User user) {
-		userService.updateUser(user);
-		return Response.status(Status.OK).build();
-
+		boolean userUpdated = userService.updateUser(user);
+		return userUpdated ? Response.status(Status.OK).build()
+				: Response.status(Status.BAD_REQUEST)
+						.entity(new ErrorMessage(ErrorCodes.USER_NOT_FOUND_CODE, ErrorCodes.USER_NOT_FOUND_MSG))
+						.build();
 	}
 
 	/**
@@ -152,7 +157,7 @@ public class UserServicesController {
 	@PostConstruct
 	public void loadData() {
 		User user = null;
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 2; i++) {
 			user = new User();
 			user.setUserName("userName" + i);
 			user.setEmailAddress("userName" + i + "@mail.com");

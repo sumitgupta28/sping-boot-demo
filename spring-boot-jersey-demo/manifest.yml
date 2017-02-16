@@ -8,6 +8,8 @@ applications:
   services:
       - user-service-db
       - user-relic-service
+      - user-mq-service
+      - user-redis-service
   env:
       SPRING_PROFILES_ACTIVE: pcf
    
