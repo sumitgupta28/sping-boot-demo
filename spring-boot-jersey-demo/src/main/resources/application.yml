@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  servlet:
+    context-path:  /demo
+
+spring:
+  profiles.active: pcf
+
+---
+spring:
+  profiles: default
+
+  datasource:
+    platform: h2
+    driverClassName: org.h2.Driver
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: 
+     
+  jpa:
+    hibernate.ddl-auto: create-drop
+    show-sql: true
+
+---
+spring:
+  profiles: pcf
+
+  #datasource:
+   # platform: h2
+    #driverClassName: org.h2.Driver
+    #url: jdbc:h2:mem:mydb
+    #username: sa
+    #password: 
+     
+  #jpa:
+   # hibernate.ddl-auto: create-drop
+    #show-sql: true
+
+  #datasource:
+   # driverClassName: com.mysql.jdbc.Driver
+    #url: mysql://bdf4016cec6f8a:d2a6da6f@us-cdbr-iron-east-04.cleardb.net:3306/ad_0917f05986f2dec?reconnect=true
+    #username: bdf4016cec6f8a
+    #password: d2a6da6f
+  
+  jpa:
+    hibernate.ddl-auto: create-drop
+    show-sql: true
+    
